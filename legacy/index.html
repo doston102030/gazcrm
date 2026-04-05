@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gaz Balon Boshqaruv Tizimi</title>
+  <meta name="description" content="Davlat tashkiloti uchun gaz balon boshqaruv tizimi — mijozlar, muddatlar va braq balonlar hisobi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">⛽</div>
+      <div class="logo-text">
+        <span class="logo-title">GAZ BALON</span>
+        <span class="logo-sub">Boshqaruv Tizimi</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="mijozlar" id="nav-mijozlar">
+        <span class="nav-icon">👥</span>
+        <span>Mijozlar</span>
+        <span class="nav-badge" id="overdue-badge" style="display:none"></span>
+      </a>
+      <a href="#" class="nav-item" data-page="qidirish" id="nav-qidirish">
+        <span class="nav-icon">🔍</span>
+        <span>Qidirish</span>
+      </a>
+      <a href="#" class="nav-item" data-page="braq" id="nav-braq">
+        <span class="nav-icon">🔧</span>
+        <span>Braq Balonlar</span>
+      </a>
+      <a href="#" class="nav-item" data-page="muddatlar" id="nav-muddatlar">
+        <span class="nav-icon">⏰</span>
+        <span>Muddatlar</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="current-time" id="current-time"></div>
+      <div class="sidebar-version">v1.0 — Davlat Tashkiloti</div>
+    </div>
+  </aside>
+
+  <!-- Mobile top bar -->
+  <div class="topbar" id="topbar">
+    <button class="menu-btn" id="menu-btn">☰</button>
+    <span class="topbar-title">⛽ Gaz Balon</span>
+    <div></div>
+  </div>
+
+  <!-- Sidebar overlay for mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Main content -->
+  <main class="main-content" id="main-content">
+
+    <!-- ========== DASHBOARD PAGE ========== -->
+    <div class="page" id="page-dashboard">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <p class="page-sub">Umumiy holat va statistika</p>
+      </div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-total">0</div>
+            <div class="stat-label">Jami mijozlar</div>
+          </div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-active">0</div>
+            <div class="stat-label">Muddati o'tmagan</div>
+          </div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-icon">🚨</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-overdue">0</div>
+            <div class="stat-label">Muddati o'tgan (45 kun)</div>
+          </div>
+        </div>
+        <div class="stat-card stat-yellow">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-soon">0</div>
+            <div class="stat-label">Tez orada tugaydi (≤7 kun)</div>
+          </div>
+        </div>
+        <div class="stat-card stat-purple">
+          <div class="stat-icon">🔧</div>
+          <div class="stat-info">
+            <div class="stat-num" id="stat-braq">0</div>
+            <div class="stat-label">Braq balonlar</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-panels">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>🚨 Muddati o'tgan mijozlar</h2>
+          </div>
+          <div class="panel-body" id="overdue-list">
+            <div class="empty-state">Hali muddati o'tgan mijoz yo'q</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h2>⚠️ Yaqin orada tugaydi</h2>
+          </div>
+          <div class="panel-body" id="soon-list">
+            <div class="empty-state">Hali yaqin muddat yo'q</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== MIJOZLAR PAGE ========== -->
+    <div class="page hidden" id="page-mijozlar">
+      <div class="page-header">
+        <h1>Mijozlar</h1>
+        <p class="page-sub">Barcha balon oluvchilar ro'yxati</p>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-input" id="mijoz-search" placeholder="🔍 Ism yoki telefon bo'yicha qidiring..." />
+        <button class="btn btn-primary" id="btn-add-mijoz">+ Yangi Mijoz</button>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">Barchasi</button>
+        <button class="filter-btn" data-filter="overdue">🚨 Muddati o'tgan</button>
+        <button class="filter-btn" data-filter="soon">⚠️ Tez orada tugaydi</button>
+        <button class="filter-btn" data-filter="ok">✅ Normal</button>
+      </div>
+      <div class="cards-grid" id="mijozlar-list"></div>
+    </div>
+
+    <!-- ========== QIDIRISH PAGE ========== -->
+    <div class="page hidden" id="page-qidirish">
+      <div class="page-header">
+        <h1>Qidirish</h1>
+        <p class="page-sub">Ism, familya yoki telefon raqam bo'yicha qidiring</p>
+      </div>
+      <div class="search-hero">
+        <div class="search-hero-box">
+          <span class="search-hero-icon">🔍</span>
+          <input type="text" id="global-search" class="search-hero-input" placeholder="Qidirish..." autofocus />
+        </div>
+        <p class="search-hint">Ism, familya, telefon raqam yoki sana bo'yicha qidiring</p>
+      </div>
+      <div id="search-results" class="cards-grid"></div>
+      <div id="search-empty" class="empty-state" style="display:none">Hech narsa topilmadi</div>
+    </div>
+
+    <!-- ========== BRAQ PAGE ========== -->
+    <div class="page hidden" id="page-braq">
+      <div class="page-header">
+        <h1>Braq Balonlar</h1>
+        <p class="page-sub">Almashtirilgan yoki shikastlangan balonlar ro'yxati</p>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-input" id="braq-search" placeholder="🔍 Qidirish..." />
+        <button class="btn btn-primary" id="btn-add-braq">+ Braq Balon Qo'shish</button>
+      </div>
+      <div class="cards-grid" id="braq-list"></div>
+    </div>
+
+    <!-- ========== MUDDATLAR PAGE ========== -->
+    <div class="page hidden" id="page-muddatlar">
+      <div class="page-header">
+        <h1>Muddatlar Jadvali</h1>
+        <p class="page-sub">45 kunlik balon almashtirish jadvali</p>
+      </div>
+      <div class="timeline-container" id="timeline-container"></div>
+    </div>
+
+  </main>
+
+  <!-- ========== MODALS ========== -->
+
+  <!-- Mijoz Modal -->
+  <div class="modal-overlay" id="modal-mijoz">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-mijoz-title">Yangi Mijoz Qo'shish</h2>
+        <button class="modal-close" data-close="modal-mijoz">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-mijoz" autocomplete="off">
+          <input type="hidden" id="mijoz-id" />
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ism <span class="req">*</span></label>
+              <input type="text" id="f-ism" placeholder="Ism" required />
+            </div>
+            <div class="form-group">
+              <label>Familya <span class="req">*</span></label>
+              <input type="text" id="f-familya" placeholder="Familya" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telefon raqam <span class="req">*</span></label>
+            <input type="tel" id="f-telefon" placeholder="+998 XX XXX XX XX" required />
+          </div>
+          <div class="form-group">
+            <label>Balon olgan sana <span class="req">*</span></label>
+            <input type="date" id="f-sana" required />
+          </div>
+          <div class="form-group">
+            <label>Manzil</label>
+            <input type="text" id="f-manzil" placeholder="Ko'cha, uy raqami" />
+          </div>
+          <div class="form-group">
+            <label>Izoh</label>
+            <textarea id="f-izoh" rows="2" placeholder="Qo'shimcha ma'lumot..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Rasm yuklash</label>
+              <div class="file-upload-box" id="img-upload-box">
+                <input type="file" id="f-rasm" accept="image/*" />
+                <div class="file-upload-label" id="img-label">
+                  <span>🖼️</span>
+                  <span>Rasm tanlang yoki tashlang</span>
+                </div>
+                <img id="img-preview" class="file-preview-img hidden" alt="preview" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>PDF hujjat</label>
+              <div class="file-upload-box" id="pdf-upload-box">
+                <input type="file" id="f-pdf" accept=".pdf" />
+                <div class="file-upload-label" id="pdf-label">
+                  <span>📄</span>
+                  <span>PDF tanlang yoki tashlang</span>
+                </div>
+                <div id="pdf-preview" class="pdf-preview hidden">
+                  <span class="pdf-icon">📄</span>
+                  <span id="pdf-name-display"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" data-close="modal-mijoz">Bekor qilish</button>
+            <button type="submit" class="btn btn-primary">Saqlash</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Braq Modal -->
+  <div class="modal-overlay" id="modal-braq">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-braq-title">Braq Balon Qo'shish</h2>
+        <button class="modal-close" data-close="modal-braq">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-braq" autocomplete="off">
+          <input type="hidden" id="braq-id" />
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ism <span class="req">*</span></label>
+              <input type="text" id="b-ism" placeholder="Ism" required />
+            </div>
+            <div class="form-group">
+              <label>Familya <span class="req">*</span></label>
+              <input type="text" id="b-familya" placeholder="Familya" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telefon raqam <span class="req">*</span></label>
+            <input type="tel" id="b-telefon" placeholder="+998 XX XXX XX XX" required />
+          </div>
+          <div class="form-group">
+            <label>Almashtirilgan sana <span class="req">*</span></label>
+            <input type="date" id="b-sana" required />
+          </div>
+          <div class="form-group">
+            <label>Sabab / Izoh</label>
+            <div class="quick-pick-group">
+              <label class="quick-chip"><input type="checkbox" class="q-opt" data-text="Balonning tepasidan kranidan qo'yilmoqda."> <span>Kranidan</span></label>
+              <label class="quick-chip"><input type="checkbox" class="q-opt" data-text="2-chisi balonning lebzasidan qo'yilmoqda."> <span>Lebzasidan</span></label>
+              <label class="quick-chip"><input type="checkbox" class="q-opt" data-text="Shu ikkitasidan bitta sinab ko'rib qo'yilgan."> <span>Sinov</span></label>
+            </div>
+            <textarea id="b-sabab" rows="3" placeholder="Braq sababi..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Rasm yuklash</label>
+            <div class="file-upload-box" id="braq-img-upload-box">
+              <input type="file" id="b-rasm" accept="image/*" />
+              <div class="file-upload-label" id="braq-img-label">
+                <span>🖼️</span>
+                <span>Balon rasmi (shikast)</span>
+              </div>
+              <img id="braq-img-preview" class="file-preview-img hidden" alt="braq preview" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" data-close="modal-braq">Bekor qilish</button>
+            <button type="submit" class="btn btn-primary">Saqlash</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modal-detail">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2 id="detail-name">Mijoz Tafsilotlari</h2>
+        <button class="modal-close" data-close="modal-detail">✕</button>
+      </div>
+      <div class="modal-body" id="detail-body"></div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>O'chirishni tasdiqlang</h2>
+        <button class="modal-close" data-close="modal-confirm">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-msg">Ushbu yozuvni o'chirishni xohlaysizmi?</p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" data-close="modal-confirm">Bekor qilish</button>
+          <button class="btn btn-danger" id="confirm-ok-btn">O'chirish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

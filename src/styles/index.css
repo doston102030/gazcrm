@@ -1,0 +1,74 @@
+/* =========================================
+   GAZ BALON PORTAL — Design System (Glassmorphism)
+   ========================================= */
+
+:root {
+  /* Core Palette */
+  --bg: #030712;
+  --bg2: #0b1120;
+  --bg3: #111827;
+  --bg-glass: rgba(17, 24, 39, 0.7);
+  --bg-glass-bright: rgba(31, 41, 55, 0.4);
+  
+  --border: rgba(55, 65, 81, 0.5);
+  --border-bright: rgba(75, 85, 99, 0.7);
+  
+  --text: #f9fafb;
+  --text2: #9ca3af;
+  --text3: #6b7280;
+
+  /* Neon Accents */
+  --neon-blue: #3b82f6;
+  --neon-blue-glow: rgba(59, 130, 246, 0.3);
+  
+  --neon-green: #10b981;
+  --neon-green-glow: rgba(16, 185, 129, 0.3);
+  
+  --neon-red: #ef4444;
+  --neon-red-glow: rgba(239, 68, 68, 0.3);
+  
+  --neon-yellow: #f59e0b;
+  --neon-yellow-glow: rgba(245, 158, 11, 0.3);
+  
+  --neon-purple: #8b5cf6;
+  --neon-purple-glow: rgba(139, 92, 246, 0.3);
+
+  /* Utilities */
+  --sidebar-w: 240px;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  --blur: blur(12px);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  background: var(--bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 99px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+.fade-in { animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+}
+
+.req { color: var(--neon-red); }
